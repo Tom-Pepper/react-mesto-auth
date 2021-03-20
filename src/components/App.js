@@ -1,4 +1,8 @@
 import React, {useState, useEffect} from 'react';
+import { Redirect, Route, Switch, useHistory, withRouter } from 'react-router-dom';
+import ProtectedRoute from './ProtectedRoute';
+import CurrentUserContext from "../contexts/CurrentUserContext";
+
 import '../index.css';
 import Header from './Header';
 import Main from './Main';
@@ -6,14 +10,16 @@ import Footer from './Footer';
 import PopupWithForm from './PopupWithForm';
 import ImagePopup from './ImagePopup';
 import api from "../utils/api";
-import CurrentUserContext from "../contexts/CurrentUserContext";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
 
 function App() {
-  //Стейт для данных пользователя
+  // Стейт для данных пользователя
   const [currentUser, setCurrentUser] = useState({});
+
+  // Cтейт для авторизации
+  const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
     api.getUserData()
@@ -23,28 +29,28 @@ function App() {
       .catch(err => console.log(err));
   }, [])
 
-  //Стейты для поп-апов (состояние - открыт / не открыт)
+  // Стейты для поп-апов (состояние - открыт / не открыт)
   const [isEditAvatarPopupOpen, setIsAvatarPopupOpen] = useState(false);
   const [isEditProfilePopupOpen, setIsProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
 
-  //Стейт для выбранной карточки, исп. в поп-апе картинки в полном размере
+  // Стейт для выбранной карточки, исп. в поп-апе картинки в полном размере
   const [selectedCard, setSelectedCard] = useState(null);
 
-  //Обработчик клика по изображению карточки (открытие поп-апа картинки)
+  // Обработчик клика по изображению карточки (открытие поп-апа картинки)
   function handleCardClick(props) {
     setSelectedCard(props);
     window.addEventListener('keydown', handleClosePopupWithEsc);
   }
 
-  //Закрытие поп-апов клавишей Esc
+  // Закрытие поп-апов клавишей Esc
   function handleClosePopupWithEsc (event) {
     if (event.keyCode === 27) {
       closeAllPopups();
     }
   }
 
-  //Обработчик для отправки данных пользователя на сервер (редактирование данных профиля)
+  // Обработчик для отправки данных пользователя на сервер (редактирование данных профиля)
   function handleUpdateUser(user) {
     api.editProfile(user.name, user.about)
       .then(res => {
@@ -54,7 +60,7 @@ function App() {
       .catch(err => console.log(err))
   }
 
-  //Обработчик для обновления аватарки пользователя (отправка на сервер через API)
+  // Обработчик для обновления аватарки пользователя (отправка на сервер через API)
   function handleUpdateAvatar(user) {
     api.uploadAvatar(user.avatar)
       .then(res => {
@@ -64,25 +70,25 @@ function App() {
       .catch(err => console.log(err))
   }
 
-  //Обработчик кнопки редактирования аватарки
+  // Обработчик кнопки редактирования аватарки
   function handleEditAvatarClick() {
     setIsAvatarPopupOpen(true);
     window.addEventListener('keydown', handleClosePopupWithEsc);
   }
 
-  //Обработчик кнопки редактирования инф-ии профиля
+  // Обработчик кнопки редактирования инф-ии профиля
   function handleEditProfileClick() {
     setIsProfilePopupOpen(true);
     window.addEventListener('keydown', handleClosePopupWithEsc);
   }
 
-  //Обработчик кнопки добавления карточки
+  // Обработчик кнопки добавления карточки
   function handleAddPlaceClick() {
     setIsAddPlacePopupOpen(true);
     window.addEventListener('keydown', handleClosePopupWithEsc);
   }
 
-  //Обработчик закрытия поп-апов
+  // Обработчик закрытия поп-апов
   function closeAllPopups() {
     setIsAddPlacePopupOpen(false);
     setIsAvatarPopupOpen(false);
@@ -91,10 +97,10 @@ function App() {
     window.removeEventListener('keydown', handleClosePopupWithEsc);
   }
 
-  //Стейт для карточек
+  // Стейт для карточек
   const [cards, setCards] = useState([]);
 
-  //Получаем данные по пользователю и карточки с сервера
+  // Получаем данные по пользователю и карточки с сервера
   useEffect(() => {
     api.getCards()
       .then(res => {
@@ -103,9 +109,9 @@ function App() {
       .catch((err) => console.log(err));
   }, []);
 
-  //Функция лайка карточки
+  // Функция лайка карточки
   function handleCardLike(card) {
-    //Проверяем, есть ли уже лайк на этой карточке
+    // Проверяем, есть ли уже лайк на этой карточке
     const isLiked = card.likes.some(i => i._id === currentUser._id);
 
     // Отправляем запрос в API и получаем обновлённые данные карточки
@@ -118,7 +124,7 @@ function App() {
       .catch(err => console.log(err));
   }
 
-  //Функция удаления карточки, по аналогии с функцией лайка
+  // Функция удаления карточки, по аналогии с функцией лайка
   function handleCardDelete(card) {
     api.deleteCard(card._id)
       .then(() => {
@@ -127,7 +133,7 @@ function App() {
       .catch(err => console.log(err));
   }
 
-  //Функция добавления карточки
+  // Функция добавления карточки
   function handleAddPlace(card) {
     api.addNewCard(card.name, card.link)
       .then(res => {
@@ -140,17 +146,34 @@ function App() {
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
-        <Header />
+        {/*<Header />*/}
 
-        <Main
-          isEditAvatarPopupOpen={handleEditAvatarClick}
-          isEditProfilePopupOpen={handleEditProfileClick}
-          isAddPlacePopupOpen={handleAddPlaceClick}
-          onCardClick={handleCardClick}
-          cards={cards}
-          onCardLike={handleCardLike}
-          onCardDelete={handleCardDelete}
-        />
+        {/*<Main*/}
+        {/*  isEditAvatarPopupOpen={handleEditAvatarClick}*/}
+        {/*  isEditProfilePopupOpen={handleEditProfileClick}*/}
+        {/*  isAddPlacePopupOpen={handleAddPlaceClick}*/}
+        {/*  onCardClick={handleCardClick}*/}
+        {/*  cards={cards}*/}
+        {/*  onCardLike={handleCardLike}*/}
+        {/*  onCardDelete={handleCardDelete}*/}
+        {/*/>*/}
+
+        <Switch>
+          <ProtectedRoute
+            exact path="/"
+            loggedIn={loggedIn}
+            component={Main}
+            isEditAvatarPopupOpen={handleEditAvatarClick}
+            isEditProfilePopupOpen={handleEditProfileClick}
+            isAddPlacePopupOpen={handleAddPlaceClick}
+            onCardClick={handleCardClick}
+            cards={cards}
+            onCardLike={handleCardLike}
+            onCardDelete={handleCardDelete}
+          >
+
+          </ProtectedRoute>
+        </Switch>
 
         <Footer />
 
@@ -190,4 +213,4 @@ function App() {
   );
 }
 
-export default App;
+export default withRouter(App);
