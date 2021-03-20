@@ -58,3 +58,5 @@ function Login({ handleLogin }) {
     </>
   );
 }
+
+export default Login;
