@@ -19,37 +19,56 @@ import AddPlacePopup from "./AddPlacePopup";
 import Error from "./Error";
 
 function App() {
-  // Хуки
+  // Хуки и стейты
 
-  // Стейт для данных пользователя
+  /**
+   * Стейт для данных пользователя (имя, о себе, автарка, id)
+   */
   const [currentUser, setCurrentUser] = useState({});
 
-  // Cтейт для авторизации
+  /**
+   * Стейт для авторизации. Показывает, залогинен пользователь или нет. Для показа только нужного контента
+   */
   const [loggedIn, setLoggedIn] = useState(false);
 
-  // Стейт для отображения InfoTooltip'а
+  /**
+   * Стейт для отображения InfoTooltip. Модалка при успешной/ неудачной регистрации или авторизации
+   */
   const [isTooltipOpened, setIsTooltipOpened] = useState(false);
 
-  // Стейт для авторизации
+  /**
+   * Стейт для авторизации. Состояние успешность авотризации пользователя.
+   */
   const [isAuth, setIsAuth] = useState(false);
 
-  // Стейт для карточек
+  /**
+   * Стейт для карточек. Для отрисовки и работы с карточками, полученными с сервера
+   */
   const [cards, setCards] = useState([]);
 
-  // Стейты для поп-апов (состояние - открыт / не открыт)
+  /**
+   * Стейты для отображения поп-апов (состояние - открыт / не открыт)
+   */
   const [isEditAvatarPopupOpen, setIsAvatarPopupOpen] = useState(false);
   const [isEditProfilePopupOpen, setIsProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
 
-  // Стейт для выбранной карточки, исп. в поп-апе картинки в полном размере
+  /**
+   * Стейт для выбранной карточки. Используется в поп-апе картинки в полном размере.
+   * Чтоб показать картинку нужной карточки при клике на фото
+   */
   const [selectedCard, setSelectedCard] = useState(null);
 
-  //Стейт для данных залогиненного пользователя
+  /**
+   * Стейт для данных залогиненного пользователя. Содержит _id и email для отображения в приложении
+   */
   const [userLoginData, setUserLoginData] = useState('');
 
   const history = useHistory();
 
-  // Получение данных о пользователе
+  /**
+   * Получение данных о пользователе через API и запись их в стейт
+   */
   useEffect(() => {
     api.getUserData()
       .then(res => {
@@ -58,7 +77,9 @@ function App() {
       .catch(err => console.log(err));
   }, []);
 
-  // Получаем карточки с сервера
+  /**
+   * Получение карточек с сервера, запись их в стейт cards
+   */
   useEffect(() => {
     api.getCards()
       .then(res => {
@@ -69,25 +90,34 @@ function App() {
 
   // Обработчики
 
-  // Обработчик клика по изображению карточки (открытие поп-апа картинки)
+  /**
+   * Обработчик клика по изображению карточки (открытие поп-апа картинки)
+   * @param props - пропсы, принимаемые ф-ей в классе Card. Туда попадает сама карточка
+   */
   function handleCardClick(props) {
     setSelectedCard(props);
     window.addEventListener('keydown', handleClosePopupWithEsc);
   }
 
-  // Закрытие поп-апов клавишей Esc
+  /**
+   * Закрытие поп-апов клавишей Esc
+   */
   function handleClosePopupWithEsc (event) {
     if (event.keyCode === 27) {
       closeAllPopups();
     }
   }
 
-  // Показ/скрытие модалки об успешной/ неудачной регистрации
+  /**
+   * Показ/скрытие модалки об успешной/ неудачной регистрации
+   */
   function openRegModal() {
     setIsTooltipOpened(!isTooltipOpened);
   }
 
-  // Закрытие модалки об успешной/ неудачной регистрации с помощью кнопки (крестик)
+  /**
+   *  Закрытие модалки об успешной/ неудачной регистрации с помощью кнопки (крестик)
+   */
   function closeRegModal() {
     setIsTooltipOpened(false);
     if (isAuth) {
@@ -95,7 +125,10 @@ function App() {
     }
   }
 
-  // Обработчик для отправки данных пользователя на сервер (редактирование данных профиля)
+  /**
+   * Обработчик для отправки данных пользователя на сервер (редактирование данных профиля)
+   * @param user — данные пользователя, содержит поля name, about, avatar, _id...
+   */
   function handleUpdateUser(user) {
     api.editProfile(user.name, user.about)
       .then(res => {
@@ -105,7 +138,10 @@ function App() {
       .catch(err => console.log(err))
   }
 
-  // Обработчик для обновления аватарки пользователя (отправка на сервер через API)
+  /**
+   * Обработчик для обновления аватарки пользователя (отправка на сервер через API)
+   * @param user — данные пользователя, тут нам понадобится только поле avatar
+   */
   function handleUpdateAvatar(user) {
     api.uploadAvatar(user.avatar)
       .then(res => {
@@ -115,25 +151,33 @@ function App() {
       .catch(err => console.log(err))
   }
 
-  // Обработчик кнопки редактирования аватарки
+  /**
+   * Обработчик кнопки редактирования аватарки
+   */
   function handleEditAvatarClick() {
     setIsAvatarPopupOpen(true);
     window.addEventListener('keydown', handleClosePopupWithEsc);
   }
 
-  // Обработчик кнопки редактирования инф-ии профиля
+  /**
+   * Обработчик кнопки редактирования информации профиля
+   */
   function handleEditProfileClick() {
     setIsProfilePopupOpen(true);
     window.addEventListener('keydown', handleClosePopupWithEsc);
   }
 
-  // Обработчик кнопки добавления карточки
+  /**
+   * Обработчик кнопки добавления новой карточки
+   */
   function handleAddPlaceClick() {
     setIsAddPlacePopupOpen(true);
     window.addEventListener('keydown', handleClosePopupWithEsc);
   }
 
-  // Обработчик закрытия поп-апов
+  /**
+   * Обработчик закрытия любых поп-апов
+   */
   function closeAllPopups() {
     setIsAddPlacePopupOpen(false);
     setIsAvatarPopupOpen(false);
@@ -190,7 +234,7 @@ function App() {
   };
 
   /**
-   * Обновление данных пользователя на основе токена.
+   * Обновление стейтов пользователя на основе токена.
    * Если токен есть, устанавливаем loggedIn и userLoginData
    */
   useEffect(() => {
@@ -218,7 +262,7 @@ function App() {
   }, [history, loggedIn]);
 
   /**
-   * Логаут пользователя
+   * Логаут пользователя из системы
    */
   const handleLogout = () => {
     localStorage.removeItem('jwt');
@@ -246,7 +290,10 @@ function App() {
       .catch((err) => console.log(err));
   }
 
-  // Функция удаления карточки, по аналогии с функцией лайка
+  /**
+   * Функция удаления карточки, по аналогии с функцией лайка
+   * @param card — удаляемая карточка
+   */
   function handleCardDelete(card) {
     api.deleteCard(card._id)
       .then(() => {
@@ -255,7 +302,10 @@ function App() {
       .catch((err) => console.log(err));
   }
 
-  // Функция добавления карточки
+  /**
+   * Функция добавления карточки
+   * @param card — добавляемая карточка
+   */
   function handleAddPlace(card) {
     api.addNewCard(card.name, card.link)
       .then(res => {
