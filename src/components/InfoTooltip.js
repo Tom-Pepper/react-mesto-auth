@@ -15,7 +15,7 @@ function InfoTooltip({ isOpen, onClose, isRegSuccess, regFailed, regSuccess }) {
           <button type="button"
                   className="popup__close"
                   onClick={onClose}
-          ></button>
+          />
           <img className="popup__image-reg-modal"
                src={`${isRegSuccess ? loginSuccess : loginFailed}`}
                alt="Изображение статуса регистрации"

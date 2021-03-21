@@ -31,16 +31,16 @@ function Main(
         <section className="profile">
           <div className="profile__wrapper">
             <div className="profile__avatar-wrapper" onClick={isEditAvatarPopupOpen}>
-              <button type="button" className="profile__avatar-edit-button"></button>
+              <button type="button" className="profile__avatar-edit-button" />
               <img className="profile__avatar" src={`${currentUser.avatar}`} alt="Аватар пользователя" />
             </div>
             <div className="profile__info">
               <h1 className="profile__info-name">{currentUser.name}</h1>
               <p className="profile__info-job">{currentUser.about}</p>
-              <button type="button" className="profile__edit-button" onClick={isEditProfilePopupOpen}></button>
+              <button type="button" className="profile__edit-button" onClick={isEditProfilePopupOpen} />
             </div>
           </div>
-          <button type="button" className="profile__add-button" onClick={isAddPlacePopupOpen}></button>
+          <button type="button" className="profile__add-button" onClick={isAddPlacePopupOpen} />
         </section>
         <section className="elements">
           {
