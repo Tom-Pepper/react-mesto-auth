@@ -155,6 +155,7 @@ function App() {
         if (res.data) {
           setIsAuth(true);
           openRegModal();
+          history.push('/sign-in');
         }
       })
       .catch((err) => {
@@ -171,21 +172,27 @@ function App() {
    */
   const handleLogin = (data) => {
     const { email, password } = data;
-    return login(email, password)
+    setUserLoginData(email);
+    login(email, password)
       .then((res) => {
-        if (res) {
+        if (res.token) {
+          localStorage.setItem('jwt', res.token);
           setLoggedIn(true);
           setIsAuth(true);
           history.push('/');
-          localStorage.setItem('jwt', res.token);
         }
       })
       .catch((err) => {
+        setIsAuth(false);
         setIsTooltipOpened(true);
         console.log(`Произошла ошибка: ${err}`);
       });
   };
 
+  /**
+   * Обновление данных пользователя на основе токена.
+   * Если токен есть, устанавливаем loggedIn и userLoginData
+   */
   useEffect(() => {
     if (localStorage.getItem('jwt')) {
       const jwt = localStorage.getItem('jwt');
@@ -202,13 +209,13 @@ function App() {
           console.log(`Произошла ошибка: ${err}`);
         });
     }
-  }, [history]);
+  }, [history, loggedIn]);
 
   useEffect(() => {
     if(loggedIn) {
       history.push('/');
     }
-  }, []);
+  }, [history, loggedIn]);
 
   /**
    * Логаут пользователя
@@ -216,6 +223,7 @@ function App() {
   const handleLogout = () => {
     localStorage.removeItem('jwt');
     setIsAuth(false);
+    history.push('/sign-in');
   };
 
   // Функциональности приложения
