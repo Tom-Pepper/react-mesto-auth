@@ -1,6 +1,8 @@
 {
   "name": "mesto-react",
-  "version": "0.1.0",
+  "version": "0.1.2",
+  "author": "Artem Kondratyev",
+  "description": "Mesto Project, written on React with <3",
   "private": true,
   "homepage": ".",
   "dependencies": {
