@@ -9,6 +9,9 @@
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.3",
     "@testing-library/user-event": "^12.6.0",
+    "dotenv": "^8.2.0",
+    "http-proxy": "^1.18.1",
+    "http-proxy-middleware": "^0.19.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
@@ -21,7 +24,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "npm run predeploy && scp -r ./build* pepper@84.201.177.226:/home/pepper/mesto-frontend"
   },
   "eslintConfig": {
     "extends": [

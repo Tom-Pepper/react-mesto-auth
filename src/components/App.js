@@ -37,7 +37,7 @@ function App() {
   const [isTooltipOpened, setIsTooltipOpened] = useState(false);
 
   /**
-   * Стейт для авторизации. Состояние успешность авотризации пользователя.
+   * Стейт для авторизации. Состояние успешности авотризации пользователя.
    */
   const [isAuth, setIsAuth] = useState(false);
 
@@ -67,26 +67,23 @@ function App() {
   const history = useHistory();
 
   /**
-   * Получение данных о пользователе через API и запись их в стейт
+   * Получение данных о пользователе и карточки
+   * через API и запись их в стейты
+   * Предварительно проверяем токен, чтобы отрисовать корректные логин и пароль
    */
   useEffect(() => {
-    api.getUserData()
-      .then(res => {
-        setCurrentUser(res)
-      })
-      .catch(err => console.log(err));
-  }, []);
-
-  /**
-   * Получение карточек с сервера, запись их в стейт cards
-   */
-  useEffect(() => {
-    api.getCards()
-      .then(res => {
-        setCards(res);
+    const token = localStorage.getItem('jwt');
+    if (!token) {
+      return;
+    }
+    api.setToken(token)
+    api.getInitialData()
+      .then(([user, cards]) => {
+        setCurrentUser(user);
+        setCards(cards.cards.reverse());
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [loggedIn])
 
   // Обработчики
 
@@ -196,9 +193,9 @@ function App() {
     const { email, password } = data;
     return register(email, password)
       .then((res) => {
-        if (res.data) {
+        if (res) { //было res.data
           setIsAuth(true);
-          openRegModal();
+          setIsTooltipOpened(true);
           history.push('/sign-in');
         }
       })
@@ -245,7 +242,7 @@ function App() {
         .then((res) => {
           if(res) {
             setLoggedIn(true);
-            setUserLoginData(res.data.email);
+            setUserLoginData(res.email); // Тут было res.data.email
           }
         })
         .catch((err) => {
@@ -256,7 +253,7 @@ function App() {
   }, [history, loggedIn]);
 
   useEffect(() => {
-    if(loggedIn) {
+    if (loggedIn) {
       history.push('/');
     }
   }, [history, loggedIn]);
@@ -266,6 +263,7 @@ function App() {
    */
   const handleLogout = () => {
     localStorage.removeItem('jwt');
+    setLoggedIn(false);
     setIsAuth(false);
     history.push('/sign-in');
   };
@@ -278,12 +276,13 @@ function App() {
    */
   function handleCardLike(card) {
     // Проверяем, есть ли уже лайк на этой карточке
-    const isLiked = card.likes.some(i => i._id === currentUser._id);
+    const isLiked = card.likes.some(i => i === currentUser._id);
 
     // Отправляем запрос в API и получаем обновлённые данные карточки
-    api.changeLikeCardStatus(card._id, !isLiked).then((newCard) => {
+    api.changeLikeCardStatus(card._id, !isLiked)
+      .then((newCard) => {
       // Формируем новый массив на основе имеющегося, подставляя в него новую карточку
-      const newCards = cards.map((c) => c._id === card._id ? newCard : c);
+      const newCards = cards.map((item) => item._id === card._id ? newCard.data : item );
       // Обновляем стейт
       setCards(newCards);
     })
@@ -309,7 +308,7 @@ function App() {
   function handleAddPlace(card) {
     api.addNewCard(card.name, card.link)
       .then(res => {
-        setCards([res, ...cards]);
+        setCards([res.body, ...cards]);
         closeAllPopups();
       })
       .catch((err) => console.log(err));

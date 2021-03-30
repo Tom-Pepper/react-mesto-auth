@@ -1,11 +1,19 @@
 /** Класс API для работы с сервером.
  * Описаны методы для работы с карточками, которые тянутся с сервера и отправляются на сервер
  */
+const BASE_URL = `${window.location.protocol}${process.env.REACT_APP_API_URL || '//localhost:3001'}`;
 
 class Api {
   constructor(config) {
     this._url = config.url;
     this._headers = config.headers;
+  }
+
+  setToken(token) {
+    this._headers = {
+      ...this._headers,
+      Authorization: `Bearer ${token}`,
+    }
   }
 
   _getResponse(res) {
@@ -18,7 +26,7 @@ class Api {
 
   getCards() {
     return fetch(`${this._url}/cards`, {
-      headers: this._headers
+      headers: this._headers,
     })
       .then(res => this._getResponse(res))
   }
@@ -26,7 +34,7 @@ class Api {
   getUserData() {
     return fetch(`${this._url}/users/me`,
       {
-        headers: this._headers
+        headers: this._headers,
       })
       .then(res => this._getResponse(res))
   }
@@ -101,7 +109,7 @@ class Api {
   }
 
   changeLikeCardStatus(cardId, isLiked) {
-    return fetch(`${this._url}/cards/likes/${cardId}`,
+    return fetch(`${this._url}/cards/${cardId}/likes`,
       {
         method: isLiked ? "PUT" : "DELETE",
         headers: this._headers
@@ -110,12 +118,22 @@ class Api {
   }
 }
 
-//Объект api для доступа к серверу, откуда будем тянуть все нужные данные
+// Учебный API, пока оставил его на всякий :)
+//
+// const api = new Api({
+//   url: 'https://mesto.nomoreparties.co/v1/cohort-18',
+//   headers: {
+//     authorization: "36f02e32-425e-4cd6-9a5e-ab45df68f83b",
+//     "Content-Type": "application/json",
+//   }
+// });
+
+// Объект api для доступа к серверу, откуда будем тянуть все нужные данные
 const api = new Api({
-  url: 'https://mesto.nomoreparties.co/v1/cohort-18',
+  url: BASE_URL,
   headers: {
-    authorization: "36f02e32-425e-4cd6-9a5e-ab45df68f83b",
     "Content-Type": "application/json",
   }
 });
+
 export default api;
