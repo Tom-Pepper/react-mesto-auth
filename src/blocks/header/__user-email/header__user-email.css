@@ -6,8 +6,20 @@
   font-weight: 400;
 }
 
+/*Временное решение, переделать на бургер начиная с 425*/
 @media screen and (max-width: 425px) {
   .header__user-email {
     font-size: 14px;
+
+  }
+}
+
+/*Временное решение, переделать на бургер начиная с 425*/
+@media screen and (max-width: 360px){
+  .header__user-email {
+    overflow: hidden;
+    width: 90px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }

@@ -1,7 +1,7 @@
 /** Класс API для работы с сервером.
  * Описаны методы для работы с карточками, которые тянутся с сервера и отправляются на сервер
  */
-const BASE_URL = `${window.location.protocol}${process.env.REACT_APP_API_URL || '//localhost:3001'}`;
+// const BASE_URL = `${window.location.protocol}${process.env.REACT_APP_API_URL || '//localhost:3001'}`;
 
 class Api {
   constructor(config) {
@@ -130,7 +130,7 @@ class Api {
 
 // Объект api для доступа к серверу, откуда будем тянуть все нужные данные
 const api = new Api({
-  url: BASE_URL,
+  url: 'https://api.nomoredomains.icu',
   headers: {
     "Content-Type": "application/json",
   }
