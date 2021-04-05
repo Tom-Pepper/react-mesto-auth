@@ -1,8 +1,8 @@
 {
   "files": {
-    "main.css": "./static/css/main.86e959c8.chunk.css",
-    "main.js": "./static/js/main.01557d01.chunk.js",
-    "main.js.map": "./static/js/main.01557d01.chunk.js.map",
+    "main.css": "./static/css/main.6cb166ad.chunk.css",
+    "main.js": "./static/js/main.9a5cc182.chunk.js",
+    "main.js.map": "./static/js/main.9a5cc182.chunk.js.map",
     "runtime-main.js": "./static/js/runtime-main.5fd83800.js",
     "runtime-main.js.map": "./static/js/runtime-main.5fd83800.js.map",
     "static/js/2.93c9fe6c.chunk.js": "./static/js/2.93c9fe6c.chunk.js",
@@ -10,7 +10,7 @@
     "static/js/3.249b4b69.chunk.js": "./static/js/3.249b4b69.chunk.js",
     "static/js/3.249b4b69.chunk.js.map": "./static/js/3.249b4b69.chunk.js.map",
     "index.html": "./index.html",
-    "static/css/main.86e959c8.chunk.css.map": "./static/css/main.86e959c8.chunk.css.map",
+    "static/css/main.6cb166ad.chunk.css.map": "./static/css/main.6cb166ad.chunk.css.map",
     "static/js/2.93c9fe6c.chunk.js.LICENSE.txt": "./static/js/2.93c9fe6c.chunk.js.LICENSE.txt",
     "static/media/index.css": "./static/media/like-button_active.75438e94.svg",
     "static/media/login-failed.df8eddf6.svg": "./static/media/login-failed.df8eddf6.svg",
@@ -20,7 +20,7 @@
   "entrypoints": [
     "static/js/runtime-main.5fd83800.js",
     "static/js/2.93c9fe6c.chunk.js",
-    "static/css/main.86e959c8.chunk.css",
-    "static/js/main.01557d01.chunk.js"
+    "static/css/main.6cb166ad.chunk.css",
+    "static/js/main.9a5cc182.chunk.js"
   ]
 }

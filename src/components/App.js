@@ -94,6 +94,7 @@ function App() {
   function handleCardClick(props) {
     setSelectedCard(props);
     window.addEventListener('keydown', handleClosePopupWithEsc);
+    window.addEventListener('click', handleClosePopupWithOverlayClick);
   }
 
   /**
@@ -106,10 +107,20 @@ function App() {
   }
 
   /**
+   * Закрытие поп-апов по клику на оверлей
+   */
+  function handleClosePopupWithOverlayClick(evt) {
+    if (evt.target.classList.contains('popup_is-opened')) {
+      closeAllPopups();
+    }
+  }
+
+  /**
    * Показ/скрытие модалки об успешной/ неудачной регистрации
    */
   function openRegModal() {
     setIsTooltipOpened(!isTooltipOpened);
+    window.addEventListener('click', handleClosePopupWithOverlayClick);
   }
 
   /**
@@ -154,6 +165,7 @@ function App() {
   function handleEditAvatarClick() {
     setIsAvatarPopupOpen(true);
     window.addEventListener('keydown', handleClosePopupWithEsc);
+    window.addEventListener('click', handleClosePopupWithOverlayClick);
   }
 
   /**
@@ -162,6 +174,7 @@ function App() {
   function handleEditProfileClick() {
     setIsProfilePopupOpen(true);
     window.addEventListener('keydown', handleClosePopupWithEsc);
+    window.addEventListener('click', handleClosePopupWithOverlayClick);
   }
 
   /**
@@ -170,6 +183,7 @@ function App() {
   function handleAddPlaceClick() {
     setIsAddPlacePopupOpen(true);
     window.addEventListener('keydown', handleClosePopupWithEsc);
+    window.addEventListener('click', handleClosePopupWithOverlayClick);
   }
 
   /**
@@ -181,6 +195,7 @@ function App() {
     setIsProfilePopupOpen(false);
     setSelectedCard(null);
     window.removeEventListener('keydown', handleClosePopupWithEsc);
+    window.removeEventListener('click', handleClosePopupWithOverlayClick);
   }
 
   // Регистрация и авторизация пользователя
@@ -385,7 +400,7 @@ function App() {
           onClose={closeRegModal}
           isRegSuccess={isAuth}
           regSuccess="Вы успешно зарегестрировались!"
-          regFailed="Что-то пошло не так! Попробуйте ещё раз."
+          regFailed="Что-то пошло не так! Возможно, введен не корректный email. Попробуйте еще раз."
         />
       </div>
     </CurrentUserContext.Provider>
