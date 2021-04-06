@@ -27,7 +27,7 @@ function App() {
   const [currentUser, setCurrentUser] = useState({});
 
   /**
-   * Стейт для авторизации. Показывает, залогинен пользователь или нет. Для показа только нужного контента
+   * Стейт для авторизации. Показывает, залогинен пользователь или нет. Для показа только доступного контента
    */
   const [loggedIn, setLoggedIn] = useState(false);
 
@@ -119,18 +119,8 @@ function App() {
    * Показ/скрытие модалки об успешной/ неудачной регистрации
    */
   function openRegModal() {
-    setIsTooltipOpened(!isTooltipOpened);
+    setIsTooltipOpened(true);
     window.addEventListener('click', handleClosePopupWithOverlayClick);
-  }
-
-  /**
-   *  Закрытие модалки об успешной/ неудачной регистрации с помощью кнопки (крестик)
-   */
-  function closeRegModal() {
-    setIsTooltipOpened(false);
-    if (isAuth) {
-      history.push('/sign-in')
-    }
   }
 
   /**
@@ -194,6 +184,7 @@ function App() {
     setIsAvatarPopupOpen(false);
     setIsProfilePopupOpen(false);
     setSelectedCard(null);
+    setIsTooltipOpened(false);
     window.removeEventListener('keydown', handleClosePopupWithEsc);
     window.removeEventListener('click', handleClosePopupWithOverlayClick);
   }
@@ -210,7 +201,7 @@ function App() {
       .then((res) => {
         if (res) { //было res.data
           setIsAuth(true);
-          setIsTooltipOpened(true);
+          openRegModal();
           history.push('/sign-in');
         }
       })
@@ -240,7 +231,7 @@ function App() {
       })
       .catch((err) => {
         setIsAuth(false);
-        setIsTooltipOpened(true);
+        openRegModal();
         console.log(`Произошла ошибка: ${err}`);
       });
   };
@@ -261,11 +252,11 @@ function App() {
           }
         })
         .catch((err) => {
-          setIsTooltipOpened(true);
+          openRegModal();
           console.log(`Произошла ошибка: ${err}`);
         });
     }
-  }, [history, loggedIn]);
+  }, [openRegModal, history, loggedIn]);
 
   useEffect(() => {
     if (loggedIn) {
@@ -397,10 +388,10 @@ function App() {
         />
         <InfoTooltip
           isOpen={isTooltipOpened}
-          onClose={closeRegModal}
+          onClose={closeAllPopups}
           isRegSuccess={isAuth}
           regSuccess="Вы успешно зарегестрировались!"
-          regFailed="Что-то пошло не так! Возможно, введен не корректный email. Попробуйте еще раз."
+          regFailed="Что-то пошло не так! Попробуйте еще раз."
         />
       </div>
     </CurrentUserContext.Provider>

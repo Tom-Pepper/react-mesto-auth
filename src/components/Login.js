@@ -30,7 +30,7 @@ function Login({ handleLogin }) {
           <input type="email"
                  required
                  minLength="2"
-                 maxLength="20"
+                 maxLength="200"
                  name="email"
                  className="authorization__data"
                  value={authData.email}
