@@ -9,8 +9,16 @@
   font-size: 14px;
   font-weight: 400;
   line-height: 17px;
+
+  background-color: transparent;
+  outline: none;
+  box-shadow: none;
 }
 
 .popup__input:last-of-type {
   margin-bottom: 48px;
+}
+
+.popup__input:focus {
+  box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.3);
 }

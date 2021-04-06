@@ -2,15 +2,15 @@ import React, { useRef, useEffect } from 'react';
 import PopupWithForm from "./PopupWithForm";
 
 function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
-  //Реф для прямого доступа к DOM-элементу инпута и его значению
+  // Реф для прямого доступа к DOM-элементу инпута и его значению
   const avatarRef = useRef('');
 
-  //Очистка поля ввода ссылки после закрытия
+  // Очистка поля ввода ссылки после закрытия
   useEffect(() => {
     avatarRef.current.value = '';
   }, [isOpen])
 
-  //Обработчик сабмита формы (обновление аватарки)
+  // Обработчик сабмита формы (обновление аватарки)
   function handleSubmit(event) {
     event.preventDefault();
 
